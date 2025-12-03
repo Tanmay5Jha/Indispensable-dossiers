@@ -1,0 +1,314 @@
+Aim
+To study and perform basic GIT operations creating a repository, cloning, committing, fetching,
+pulling, and branching to manage code collaboratively in a distributed version control system.
+Objectives
+● Understand the purpose of Git as a distributed version control system.
+● Learn to create and configure a Git repository (local &amp; remote).
+● Perform commit, push, fetch, and pull operations.
+● Create and manage branches for version control.
+● Merge branch changes back into the main branch.
+Procedure / Steps
+Step 1: Configure Git
+Open Git Bash or Terminal and configure your username and email (only once per system):
+git config --global user.name &quot;Your Name&quot;
+git config --global user.email &quot;youremail@example.com&quot;
+
+Verify configuration:
+git config --list
+
+Step 2: Create a Local Repository
+Create a new folder and initialize Git:
+mkdir git-operations-demo
+cd git-operations-demo
+git init
+Step 3: Create a File and Commit
+Create a sample file:
+echo &quot;Hello Git World!&quot; &gt; hello.txt
+git add hello.txt
+
+git commit -m &quot;Initial commit: Added hello.txt&quot;
+Step 4: Create a Remote Repository on GitHub
+1. Go to https://github.com/new
+2. Repository name: git-operations-demo
+3. Choose Public → click Create Repository
+4. Copy the HTTPS URL (e.g., https://github.com/username/git-operations-demo.git)
+Connect remote to local:
+git remote add origin https://github.com/&lt;your-username&gt;/git-operations-demo.git
+Push initial commit:
+git push -u origin master
+Step 5: Perform Fetch Operation
+Make some changes to the file directly on GitHub (edit online, commit).
+Then, from your local machine:
+git fetch origin
+
+Explanation: Downloads updates from remote repository without merging them into
+your current branch.
+View differences:
+git log origin/master
+
+Step 6: Perform Pull Operation
+To bring changes from remote into your local branch:
+git pull origin master
+
+Explanation: Combines fetch and merge operations — now local and remote
+branches are synchronized.
+Check file:
+
+cat hello.txt
+
+Step 7: Branching Operation
+Create and switch to a new branch:
+git checkout -b feature-update
+
+Edit the file:
+echo &quot;This line is from feature branch.&quot; &gt;&gt; hello.txt
+git add hello.txt
+git commit -m &quot;Updated hello.txt in feature branch&quot;
+
+Switch back to master branch:
+git checkout master
+
+Merge the feature branch:
+git merge feature-update
+
+Push merged changes to remote:
+git push origin master
+Steps to create a Spring Boot web app (Maven), build it, and verify /hello — every step explained clearly
+
+Below is a complete, step-by-step procedure with commands, exact file contents, what each step does, why it matters, and quick troubleshooting. Follow in order and you’ll have a working Spring Boot app that returns Hello World at http://localhost:8080/hello.
+
+Prerequisites (do this first)
+
+Install Java JDK (17+)
+
+Why: Spring Boot (modern versions) requires Java.
+
+Verify:
+
+java -version
+
+
+Expect output like openjdk version "17.0.x".
+
+Install Maven
+
+Why: We’ll use Maven to create, manage, build, and package the project.
+
+Verify:
+
+mvn -v
+
+
+Expect Maven version output.
+
+Install Git (optional but recommended)
+
+Why: to track changes and push to remote repos.
+
+Verify:
+
+git --version
+
+
+IDE (optional)
+
+Use IntelliJ IDEA, Eclipse, or VS Code with Java support — speeds development but all commands below work in terminal.
+
+Step 1 — Create a new Spring Boot project (via Spring Initializr)
+
+Method A — Web (recommended for beginners):
+
+Open: https://start.spring.io
+
+Choose:
+
+Project: Maven
+
+Language: Java
+
+Spring Boot: latest stable (e.g., 3.x)
+
+Group: com.example
+
+Artifact: helloworld
+
+Packaging: Jar
+
+Java: 17 (or 21)
+
+Under Dependencies click Add → choose Spring Web.
+
+Click Generate → download helloworld.zip. Extract it.
+
+What this does: generates a ready Maven project skeleton with pom.xml, src/main/java, etc., already set up.
+
+Method B — Command line (maven archetype quickstart)
+
+mvn archetype:generate \
+  -DgroupId=com.example \
+  -DartifactId=helloworld \
+  -DarchetypeArtifactId=maven-archetype-quickstart \
+  -DinteractiveMode=false
+cd helloworld
+
+
+(You’ll need to edit pom.xml to add Spring Boot dependencies — using Initializr is simpler.)
+
+Step 2 — Explore the project structure
+
+Open the project folder. Typical layout:
+
+helloworld/
+ ├─ pom.xml
+ └─ src/
+    ├─ main/
+    │  ├─ java/com/example/helloworld/
+    │  │   └─ HelloworldApplication.java
+    │  └─ resources/
+    │      └─ application.properties
+    └─ test/
+
+
+Why: pom.xml controls dependencies/build. src/main/java is application code. resources holds properties.
+
+Step 3 — Add the REST controller
+
+Create file src/main/java/com/example/helloworld/HelloController.java with this content:
+
+package com.example.helloworld;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class HelloController {
+
+    @GetMapping("/hello")
+    public String sayHello() {
+        return "Hello World";
+    }
+}
+
+
+Explanation:
+
+@RestController marks this class as a controller returning data directly.
+
+@GetMapping("/hello") maps HTTP GET /hello to sayHello().
+
+Step 4 — Verify the main class
+
+HelloworldApplication.java (created by Initializr) should look like:
+
+package com.example.helloworld;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class HelloworldApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(HelloworldApplication.class, args);
+    }
+}
+
+
+Why: @SpringBootApplication enables Spring Boot auto-configuration and component scanning.
+
+Step 5 — Check (or add) pom.xml essentials
+
+If you used Initializr, pom.xml is ready. Minimal important parts:
+
+<parent>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-parent</artifactId>
+  <version>3.2.0</version> <!-- example -->
+</parent>
+
+<dependencies>
+  <dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+  </dependency>
+  <!-- (optionally) test deps already included -->
+</dependencies>
+
+<build>
+  <plugins>
+    <plugin>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-maven-plugin</artifactId>
+    </plugin>
+  </plugins>
+</build>
+
+
+Why: spring-boot-starter-web brings Tomcat & Spring MVC; spring-boot-maven-plugin produces runnable JARs.
+
+Step 6 — Build the project with Maven
+
+Run from project root:
+
+mvn clean package
+
+
+What happens:
+
+Maven downloads dependencies, compiles Java sources, runs tests, and packages .jar in target/.
+
+Look for BUILD SUCCESS in the console.
+
+If tests fail or build fails: read the error stack, fix code or tests. You can skip tests for quick run:
+
+mvn clean package -DskipTests
+
+
+(But don’t skip tests in production — they catch problems.)
+
+Step 7 — Run the app locally (two ways)
+Option A — Using Maven
+mvn spring-boot:run
+
+Option B — Run the packaged JAR
+java -jar target/helloworld-0.0.1-SNAPSHOT.jar
+
+
+(Replace filename with the real one created in target/.)
+
+Console output to expect:
+Messages showing Spring Boot startup, ending with something like:
+
+Tomcat started on port(s): 8080 (http)
+Started HelloworldApplication in X seconds
+
+
+Why: Spring Boot runs an embedded Tomcat server on port 8080 by default.
+
+Step 8 — Verify the Hello World endpoint
+
+Open a browser or use curl/Postman:
+
+Browser:
+
+http://localhost:8080/hello
+
+
+You should see Hello World as plain text.
+
+Curl:
+
+curl http://localhost:8080/hello
+
+
+Output:
+
+Hello World
+
+
+If it doesn’t work:
+
+Confirm app is running (check terminal logs).
+
+Confirm port (if application.properties changed server.port).
+
+Check for typos in HelloController package or mapping.
